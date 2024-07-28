@@ -7,6 +7,10 @@ function onAddItem(): void {
   var listItemText: HTMLInputElement = <HTMLInputElement>(
     document.getElementById("listItemText")
   );
+  if (listItemText.value === "") {
+    window.alert("Please enter something to create a list!!");
+    return;
+  }
   var deleteBtn: HTMLButtonElement = <HTMLButtonElement>(
     document.createElement("button")
   );
@@ -14,29 +18,39 @@ function onAddItem(): void {
     document.createElement("button")
   );
 
+  var actionBtnContainer: HTMLDivElement = <HTMLDivElement>(
+    document.createElement("div")
+  );
+
   var listContainer: HTMLDivElement = <HTMLDivElement>(
     document.getElementById("listContainer")
   );
 
   deleteBtn.setAttribute("id", "deleteListItem");
+  deleteBtn.setAttribute("class", "fa fa-remove");
   editBtn.setAttribute("id", "editListItem");
+  editBtn.setAttribute("class", "fa fa-edit");
+  actionBtnContainer.setAttribute("class", "actionBtnContainer");
 
-  deleteBtn.innerHTML = "X";
-  editBtn.innerHTML = "Edit";
+  // deleteBtn.innerHTML = "X";
+  // editBtn.innerHTML = "Edit";
   listItem.innerHTML = listItemText.value;
 
   deleteBtn.addEventListener("click", (oEvent) => onDeleteItem(oEvent));
   editBtn.addEventListener("click", (oEvent) => onEditItem(oEvent));
 
-  listItem.appendChild(deleteBtn);
-  listItem.appendChild(editBtn);
+  // listItem.appendChild(deleteBtn);
+  // listItem.appendChild(editBtn);
+  actionBtnContainer.appendChild(deleteBtn);
+  actionBtnContainer.appendChild(editBtn);
+  listItem.appendChild(actionBtnContainer);
   list.appendChild(listItem);
   listContainer.appendChild(list);
 }
 
 //Function to delete item from list
 function onDeleteItem(oEvent) {
-  var currListItm = oEvent.target.parentElement;
+  var currListItm = oEvent.target.parentElement.parentElement;
   var list: HTMLUListElement = <HTMLUListElement>(
     document.getElementById("list")
   );
@@ -46,34 +60,40 @@ function onDeleteItem(oEvent) {
 //Function to save item in list
 function onSaveItem(oEvent) {
   var currSaveBtn = oEvent.target;
-  var currListItm = currSaveBtn.parentElement;
+  var currListItm = currSaveBtn.parentElement.parentElement;
+  var actionBtnGroup = oEvent.target.parentElement;
   var inputFieldVal = currListItm.children[0].value;
   currListItm.removeChild(currListItm.children[0]);
-  currListItm.removeChild(currListItm.children[1]);
+  actionBtnGroup.removeChild(actionBtnGroup.children[1]);
   currListItm.firstChild.textContent = inputFieldVal;
 
   var editBtn: HTMLButtonElement = <HTMLButtonElement>(
     document.createElement("button")
   );
   editBtn.setAttribute("id", "editListItem");
-  editBtn.innerHTML = "Edit";
+  editBtn.setAttribute("class", "fa fa-edit");
+  // editBtn.innerHTML = "Edit";
   editBtn.addEventListener("click", (oEvent) => onEditItem(oEvent));
-  currListItm.appendChild(editBtn);
+  actionBtnGroup.appendChild(editBtn);
 }
 
 //Function to edit item in list
 function onEditItem(oEvent) {
   var currEditBtn = oEvent.target;
-  var currListItm = currEditBtn.parentElement;
-  currListItm.removeChild(currListItm.children[1]);
+  var currListItm = currEditBtn.parentElement.parentElement;
+  var actionBtnGroup = currEditBtn.parentElement;
+
+  actionBtnGroup.removeChild(actionBtnGroup.children[1]);
+  // currListItm.removeChild(currListItm.firstChild);
 
   var saveBtn: HTMLButtonElement = <HTMLButtonElement>(
     document.createElement("button")
   );
   saveBtn.setAttribute("id", "saveListItem");
-  saveBtn.innerHTML = "Save";
+  saveBtn.setAttribute("class", "fa fa-save");
+  // saveBtn.innerHTML = "Save";
   saveBtn.addEventListener("click", (oEvent) => onSaveItem(oEvent));
-  currListItm.appendChild(saveBtn);
+  actionBtnGroup.appendChild(saveBtn);
   // currEditBtn.innerHTML = "Save";
   // currEditBtn.removeEventListener("click", onEditItem, true);
   // currEditBtn.addEventListener("click", onSaveItem);
@@ -83,9 +103,10 @@ function onEditItem(oEvent) {
   //itemInput.setAttribute("type", "text");
   // var currListItm = oEvent.target.parentElement;
   itemInput.value = currListItm.firstChild.textContent;
+  itemInput.setAttribute("class", "editInputField");
   // document.getElementById("list").insertBefore(currListItm.firstChild)
   currListItm.firstChild.textContent = "";
-  currListItm.insertBefore(itemInput, currListItm.firstChild);
+  currListItm.insertBefore(itemInput, actionBtnGroup);
 }
 
 //Add Button
